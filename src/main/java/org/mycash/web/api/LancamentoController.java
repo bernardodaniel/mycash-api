@@ -2,10 +2,10 @@ package org.mycash.web.api;
 
 import java.util.List;
 
-import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 import org.mycash.domain.Lancamento;
-import org.mycash.repository.LancamentoRepository;
+import org.mycash.service.LancamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,22 +21,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class LancamentoController {
 
 	@Autowired
-	private LancamentoRepository repository;
+	private LancamentoService service;
 	
 	@GetMapping
 	List<Lancamento> todos() {
-		return repository.findAll();
+		return service.findAll();
 	}
 	
 	@PostMapping
-	Lancamento criar(@RequestBody Lancamento lancamento) {
-		return repository.save(lancamento);
+	Lancamento criar(@Valid @RequestBody Lancamento lancamento) {
+		return service.save(lancamento);
 	}
 	
 	@GetMapping("/{id}")
 	Lancamento apenasUm(@PathVariable Integer id) {
-		return repository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException());
+		return service.findById(id);
 	}
 	
 	@PutMapping("/{id}")
@@ -44,21 +43,12 @@ public class LancamentoController {
 			@PathVariable Integer id, 
 			@RequestBody Lancamento novoLancamento) {
 	
-		return repository.findById(id)
-			.map(lancamento -> {
-				lancamento.setDescricao(novoLancamento.getDescricao());
-				lancamento.setValor(novoLancamento.getValor());
-				lancamento.setTipo(novoLancamento.getTipo());
-				lancamento.setData(novoLancamento.getData());
-				
-				return repository.save(lancamento);
-			})
-			.orElseThrow(() -> new EntityNotFoundException());
+		return service.atualizar(id, novoLancamento);
 	}
 	
 	@DeleteMapping("/{id}")
 	void excluir(@PathVariable Integer id) {
-		repository.deleteById(id);
+		service.deleteById(id);
 	}
 	
 }
