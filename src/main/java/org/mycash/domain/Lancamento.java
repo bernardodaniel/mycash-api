@@ -9,8 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -35,10 +33,6 @@ public class Lancamento {
 	
 	@Enumerated(EnumType.STRING)
 	private LancamentoTipo tipo;
-	
-	@ManyToOne
-	@JoinColumn(name = "categoria_id")
-	private Categoria categoria;
 
 	public Integer getId() {
 		return id;
@@ -78,14 +72,6 @@ public class Lancamento {
 
 	public void setTipo(LancamentoTipo tipo) {
 		this.tipo = tipo;
-	}
-
-	public Categoria getCategoria() {
-		return categoria;
-	}
-
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
 	}
 
 }
