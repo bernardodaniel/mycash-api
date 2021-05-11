@@ -1,12 +1,12 @@
 package org.mycash.web.api;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.mycash.domain.Categoria;
+import org.mycash.repository.CategoriaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,26 +19,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/categoria")
 public class CategoriaController {
-
-	// Somente exemplo
-	private static List<Categoria> categorias = new ArrayList<>();
+	
+	@Autowired
+	private CategoriaRepository repository;
 	
 	@GetMapping
 	List<Categoria> todos() {
-		return categorias;
+		return repository.findAll();
 	}
 	
 	@PostMapping
 	Categoria criar(@RequestBody Categoria categoria) {
-		categorias.add(categoria);
-		return categoria;
+		return repository.save(categoria);
 	}
 	
 	@GetMapping("/{id}")
 	Categoria apenasUm(@PathVariable Integer id) {
-		Optional<Categoria> categoriaOp = buscaPorId(id);
-		
-		return categoriaOp.get();
+		return repository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException());
 	}
 	
 	@PutMapping("/{id}")
@@ -46,37 +44,18 @@ public class CategoriaController {
 			@PathVariable Integer id, 
 			@RequestBody Categoria novoCategoria) {
 	
-		return buscaPorId(id)
+		return repository.findById(id)
 			.map(categoria -> {
 				categoria.setNome(novoCategoria.getNome());
 				
-				categorias.remove(categoria);
-				categorias.add(categoria);
-				
-				return categoria;
+				return repository.save(categoria);
 			})
 			.orElseThrow(() -> new EntityNotFoundException());
 	}
 	
 	@DeleteMapping("/{id}")
 	void excluir(@PathVariable Integer id) {
-		buscaPorId(id)
-		.map(categoria -> {
-			categorias.remove(categoria);
-			
-			return categoria;
-		})
-		.orElseThrow(() -> new EntityNotFoundException());
+		repository.deleteById(id);
 	}
-
-	private Optional<Categoria> buscaPorId(Integer id) {
-		Optional<Categoria> categoriaOp = categorias
-				.stream()
-				.filter(l -> l.getId() == id)
-				.reduce((u, v) -> { throw new IllegalStateException(); });
-		return categoriaOp;
-	}
-	
-	
 	
 }
