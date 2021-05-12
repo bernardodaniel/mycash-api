@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
@@ -45,6 +47,10 @@ public class Lancamento {
 	@Enumerated(EnumType.STRING)
 	@NotNull(message = "Campo tipo é obrigatório")
 	private LancamentoTipo tipo;
+	
+	@ManyToOne
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
 
 	public Integer getId() {
 		return id;
@@ -84,6 +90,14 @@ public class Lancamento {
 
 	public void setTipo(LancamentoTipo tipo) {
 		this.tipo = tipo;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }
