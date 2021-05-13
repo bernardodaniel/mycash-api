@@ -3,8 +3,8 @@ package org.mycash.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Usuario {
@@ -13,12 +13,9 @@ public class Usuario {
 	@GeneratedValue
 	private Integer id;
 	
-	@NotBlank
-	@Size(max = 20)
 	private String email;
 	
-	@NotBlank
-	@Size(max = 120)
+	@JsonIgnore
 	private String senha;
 	
 	private UsuarioRole role;

@@ -9,7 +9,6 @@ import org.mycash.domain.UsuarioRole;
 import org.mycash.exception.UsuarioException;
 import org.mycash.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,19 +17,19 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepository repo;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
 	public List<Usuario> findAll() {
 		return repo.findAll();
 	}
 
-	public Usuario save(Usuario usuario) {
+	public Usuario save(String email, String senha) {
+		Usuario usuario = new Usuario();
+		usuario.setEmail(email);
+		usuario.setSenha(senha);
+		usuario.setRole(UsuarioRole.USER);
+		
 		if (repo.findByEmail(usuario.getEmail()).isPresent())
 			throw new UsuarioException("Já existe um usuário com este e-mail");
 			
-		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-		
 		return repo.save(usuario);
 	}
 	
@@ -38,7 +37,7 @@ public class UsuarioService {
 		if (repo.findByEmail(email).isEmpty()) {
 			Usuario usuario = new Usuario();
 			usuario.setEmail(email);
-			usuario.setSenha(passwordEncoder.encode(senha));
+			usuario.setSenha(senha);
 			usuario.setRole(UsuarioRole.ADMIN);
 			
 			repo.save(usuario);
@@ -55,13 +54,12 @@ public class UsuarioService {
 	public Usuario trocarSenha(String email, String senhaAntiga, String senhaNova) {
 		Usuario usuario = findByEmail(email);
 		
-		String senhaAntigaEncoded = passwordEncoder.encode(senhaAntiga);
-		String senhaDoBancoEncoded = usuario.getSenha();
+		String senhaDoBanco = usuario.getSenha();
 		
-		if (!senhaAntigaEncoded.equals(senhaDoBancoEncoded))
+		if (!senhaAntiga.equals(senhaDoBanco))
 			throw new UsuarioException("Senha antiga não confere");
 		
-		usuario.setSenha(passwordEncoder.encode(senhaNova));
+		usuario.setSenha(senhaNova);
 
 		return repo.save(usuario);
 	}

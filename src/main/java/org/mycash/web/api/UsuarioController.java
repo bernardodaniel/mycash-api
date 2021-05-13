@@ -2,8 +2,6 @@ package org.mycash.web.api;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.mycash.domain.Usuario;
 import org.mycash.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,8 +26,11 @@ public class UsuarioController {
 	}
 	
 	@PostMapping
-	Usuario criar(@Valid @RequestBody Usuario usuario) {
-		return service.save(usuario);
+	Usuario criar(
+			@RequestParam(required = true) String email, 
+			@RequestParam(required = true) String senha) {
+		
+		return service.save(email, senha);
 	}
 	
 	@GetMapping("/{email}")
