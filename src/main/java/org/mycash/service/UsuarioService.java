@@ -25,7 +25,7 @@ public class UsuarioService {
 		Usuario usuario = new Usuario();
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
-		usuario.setRole(UsuarioRole.USER);
+		usuario.setRole(UsuarioRole.ROLE_USER);
 		
 		if (repo.findByEmail(usuario.getEmail()).isPresent())
 			throw new UsuarioException("Já existe um usuário com este e-mail");
@@ -38,7 +38,7 @@ public class UsuarioService {
 			Usuario usuario = new Usuario();
 			usuario.setEmail(email);
 			usuario.setSenha(senha);
-			usuario.setRole(UsuarioRole.ADMIN);
+			usuario.setRole(UsuarioRole.ROLE_ADMIN);
 			
 			repo.save(usuario);
 		}
