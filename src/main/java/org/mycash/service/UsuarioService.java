@@ -17,20 +17,23 @@ public class UsuarioService {
 
 	@Autowired
 	private UsuarioRepository repo;
-
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	public List<Usuario> findAll() {
 		return repo.findAll();
 	}
 
-	public Usuario save(Usuario usuario) {
+	public Usuario registraUsuarioUser(String email, String senha) {
+		Usuario usuario = new Usuario();
+		usuario.setEmail(email);
+		usuario.setSenha(passwordEncoder.encode(senha));
+		usuario.setRole(UsuarioRole.ROLE_USER);
+		
 		if (repo.findByEmail(usuario.getEmail()).isPresent())
 			throw new UsuarioException("Já existe um usuário com este e-mail");
 			
-		usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-		
 		return repo.save(usuario);
 	}
 	
@@ -39,7 +42,7 @@ public class UsuarioService {
 			Usuario usuario = new Usuario();
 			usuario.setEmail(email);
 			usuario.setSenha(passwordEncoder.encode(senha));
-			usuario.setRole(UsuarioRole.ADMIN);
+			usuario.setRole(UsuarioRole.ROLE_ADMIN);
 			
 			repo.save(usuario);
 		}
@@ -55,10 +58,7 @@ public class UsuarioService {
 	public Usuario trocarSenha(String email, String senhaAntiga, String senhaNova) {
 		Usuario usuario = findByEmail(email);
 		
-		String senhaAntigaEncoded = passwordEncoder.encode(senhaAntiga);
-		String senhaDoBancoEncoded = usuario.getSenha();
-		
-		if (!senhaAntigaEncoded.equals(senhaDoBancoEncoded))
+		if (!passwordEncoder.matches(senhaAntiga, usuario.getSenha()))
 			throw new UsuarioException("Senha antiga não confere");
 		
 		usuario.setSenha(passwordEncoder.encode(senhaNova));

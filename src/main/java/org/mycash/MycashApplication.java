@@ -17,6 +17,7 @@ public class MycashApplication {
 		
 		UsuarioService usuService = context.getBean(UsuarioService.class);
 		usuService.registraUsuarioAdmin("admin@mycash.com", "admin");
+		usuService.registraUsuarioUser("user@mycash.com", "user");
 	}
 	
 	@GetMapping
