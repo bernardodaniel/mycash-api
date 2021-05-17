@@ -66,4 +66,11 @@ public class UsuarioService {
 		return repo.save(usuario);
 	}
 
+	public Usuario resetarSenha(String email, String senhaNova) {
+		Usuario usuario = findByEmail(email);
+		usuario.setSenha(passwordEncoder.encode(senhaNova));
+
+		return repo.save(usuario);
+	}
+
 }

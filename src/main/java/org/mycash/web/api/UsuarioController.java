@@ -51,4 +51,13 @@ public class UsuarioController {
 		return service.trocarSenha(email, senhaAntiga, senhaNova);
 	}
 	
+	@PutMapping("/{email}")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	Usuario resetarSenha(
+			@PathVariable("email") String email, 
+			@RequestParam(required = true) String senhaNova) {
+	
+		return service.resetarSenha(email, senhaNova);
+	}
+	
 }
