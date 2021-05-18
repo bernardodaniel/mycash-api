@@ -1,9 +1,12 @@
 package org.mycash.web.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.mycash.domain.Usuario;
 import org.mycash.service.UsuarioService;
+import org.mycash.web.dto.UsuarioDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +24,19 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioService service;
 	
+	@Autowired
+	private ModelMapper mapper;
+	
 	@GetMapping
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	List<Usuario> todos() {
-		return service.findAll();
+	List<UsuarioDTO> todos() {
+		List<Usuario> usuarios = service.findAll();
+		List<UsuarioDTO> usuariosDTO = usuarios
+			.stream()
+			.map((u) -> mapper.map(u, UsuarioDTO.class))
+			.collect(Collectors.toList());
+		
+		return usuariosDTO;
 	}
 	
 	@PostMapping
