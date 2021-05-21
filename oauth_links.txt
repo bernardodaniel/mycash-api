@@ -1,0 +1,11 @@
+OAuth 2.0:
+https://oauth.net/2/
+
+OAuth2 Boot:
+https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/
+
+spring-security-oauth:
+https://projects.spring.io/spring-security-oauth/docs/oauth2.html
+
+JWT:
+https://jwt.io/
